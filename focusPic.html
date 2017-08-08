@@ -60,9 +60,21 @@
 
 		function moveElement(elementId, index){
 			if(!document.getElementById)return false;
-			if(!document.getElementById("pic-con")) return false;
+			if(!document.getElementById(elementId)) return false;
 			var picContainer = document.getElementById("pic-con");
-			picContainer.style.left = -600*index +"px";
+			if(picContainer.movement){
+				clearTimeout(picContainer.movement);
+			}
+			if(!picContainer.style.left){
+				picContainer.style.left = "0px";
+			}
+			var leftX = parseInt(picContainer.style.left);
+			var dist = ((-600*index) - leftX)/10;
+			dist = ((dist > 0) ? Math.ceil(dist) : Math.floor(dist)); 
+			if(0 == dist)return;
+			leftX += dist;
+			picContainer.style.left = leftX + "px";
+			picContainer.movement = setTimeout(function(){moveElement(elementId, index)}, 10);
 		}
 
 		function AddMouseOverEvent()
@@ -73,10 +85,6 @@
 				// links[i].onmouseover = function() {
 				// 	ShowPic(this);
 				// }
-
-				links[i].onmouseover = function(){
-					moveElement("pic-con",i);
-				}
 
 				links[i].onmouseover = function(index){
 					return  function() {
